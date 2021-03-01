@@ -73,8 +73,7 @@ public class Config {
          * 云通信 验证usersig 所用的公钥
          */
         public final static String PUBLICKEY = "-----BEGIN PUBLIC KEY-----\n" +
-                "\n" +
-                "\n" +
+                "8e1b7bee98957b4d8101fa7b31a351a939fb062dc60348e390d1e8816c5ab03e" +
                 "-----END PUBLIC KEY-----\n";
     }
 

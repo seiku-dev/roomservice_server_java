@@ -219,7 +219,7 @@ public class tls_sigature {
 				System.out.println("Timeout");
 				return result;
 			}
-			
+
 			//Get Serial String from json
 			String SerialString = 
 				"TLS.appid_at_3rd:" + strAppid3rd + "\n" +
@@ -529,11 +529,14 @@ public class tls_sigature {
 		byte[] signatureBytes = decoder.decode(sigTLS.getBytes(Charset.forName("UTF-8")));
 		
 		try {
-			String strSdkAppid = jsonObject.getString("TLS.sdk_appid");
-			String sigTime = jsonObject.getString("TLS.time");
-			String sigExpire = jsonObject.getString("TLS.expire_after");
-			
-			if (Integer.parseInt(strSdkAppid) != sdkAppid)
+//			String strSdkAppid = jsonObject.getString("TLS.sdk_appid");
+			Integer strSdkAppid = jsonObject.getInt("TLS.sdkappid");
+			Integer sigTime = jsonObject.getInt("TLS.time");
+//			String sigExpire = jsonObject.getString("TLS.expire_after");
+			Integer sigExpire = jsonObject.getInt("TLS.expire");
+
+//			if (Integer.parseInt(strSdkAppid) != sdkAppid)
+			if (strSdkAppid != sdkAppid)
 			{
 				result.errMessage = new String(	"sdkappid "
 						+ strSdkAppid
@@ -543,7 +546,8 @@ public class tls_sigature {
 				return result;
 			}
 
-			if ( System.currentTimeMillis()/1000 - Long.parseLong(sigTime) > Long.parseLong(sigExpire)) {
+//			if ( System.currentTimeMillis()/1000 - Long.parseLong(sigTime) > Long.parseLong(sigExpire)) {
+			if ( System.currentTimeMillis()/1000 - sigTime > sigExpire) {
 				result.errMessage = new String("TLS sig is out of date");
 				return result;
 			}
@@ -568,8 +572,10 @@ public class tls_sigature {
 			signature.initVerify(pubKeyStruct);
 			signature.update(SerialString.getBytes(Charset.forName("UTF-8")));
 			boolean bool = signature.verify(signatureBytes);
-            result.expireTime = Integer.parseInt(sigExpire);
-            result.initTime = Integer.parseInt(sigTime);
+//            result.expireTime = Integer.parseInt(sigExpire);
+//            result.initTime = Integer.parseInt(sigTime);
+			result.expireTime = sigExpire;
+			result.initTime = sigTime;
 			result.verifyResult = bool;
 		}
 		catch(Exception e)
